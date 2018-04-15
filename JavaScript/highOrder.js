@@ -1,4 +1,17 @@
 const mockInts = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]
+const mockPeople = [
+    { name: "Vix", age: 24, quote: "" },
+    { name: "Doctor", age: 900, quote: "BARCELONA!" },
+    { name: "MPJ", age: 30, quote: "Good Monday Morning!" }
+]
+const mockTasks = [
+    [ "Vix", "Study JavaScript", "doing" ],
+    [ "MPJ", "Post a video every Monday", "pending" ],
+    [ "Doctor", "End the Time War", "done" ],
+    [ "Vix", "Fix Redis issue", "done" ],
+    [ "Vix", "Cook lunch", "pending" ],
+    [ "Doctor", "Get rid of Daleks" ]
+]
 
 const vixArray = {
     init: function(values) {
@@ -38,20 +51,58 @@ const vixArray = {
                 fResult.push(fValues[0])
             return this._filter(fResult, fValues.slice(1), filterCallback)
         }
+    },
+    find: function (findCallback) {
+        return this._find(this.values, findCallback)
+    },
+    _find: function (fValues, findCallback) {
+        if (fValues.length == 0)
+            return null
+        else if (findCallback(fValues[0]))
+            return fValues[0]
+        else
+            return this._find(fValues.slice(1), findCallback)
     }
 }
 
-const myVixArray = Object.create(vixArray).init(mockInts)
+const person = {
+    init: function (name, age, quote) {
+        this.name = name
+        this.age = age
+        this.quote = quote
+        return this
+    },
+    speak: function () { console.log(this.quote) }
+}
 
-const vSum = myVixArray.reduce(0, (sum, value) => sum + value )
+const task = {
+    init: function (owner, description, status) {
+        this.owner = owner,
+        this.description = description,
+        this.status = status
+        return this
+    },
+    setStatus: function (newStatus) { this.status = newStatus }
+}
 
-const vDiff = myVixArray.reduce(0, (diff, value) => diff - value )
+const vInts = Object.create(vixArray).init(mockInts)
+const vPeople = Object.create(vixArray).init(mockPeople)
 
-const vDoubleArray = myVixArray.map((value) => value * 2 )
+const vSum = vInts.reduce(0, (sum, value) => sum + value )
 
-const vEvenNumbers = myVixArray.filter((value) => value % 2 == 0 )
+const vDiff = vInts.reduce(0, (diff, value) => diff - value )
+
+const vDoubleArray = vInts.map((value) => value * 2 )
+
+const vEvenNumbers = vInts.filter((value) => value % 2 == 0 )
+
+const vPeopleAge = vPeople.reduce(0, (sum, person) => sum + person.age )
+
+const vDoctor = vPeople.find((person) => person.name === "Doctor" )
 
 console.log("Sum with reduce:", vSum)
 console.log("Difference with reduce:", vDiff)
 console.log("Array of doubled values with map:", vDoubleArray)
-console.log("Array of odd numbers with map:", vEvenNumbers)
+console.log("Array of even numbers with map:", vEvenNumbers)
+console.log("Sum of ages in people aray:", vPeopleAge)
+console.log("Doctor object with find:", vDoctor)
