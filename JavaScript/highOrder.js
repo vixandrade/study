@@ -1,6 +1,6 @@
 const mockInts = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]
 const mockPeople = [
-    { name: "Vix", age: 24, quote: "" },
+    { name: "Vix", age: 24, quote: "IT WORKS!" },
     { name: "Doctor", age: 900, quote: "BARCELONA!" },
     { name: "MPJ", age: 30, quote: "Good Monday Morning!" }
 ]
@@ -62,6 +62,17 @@ const vixArray = {
             return fValues[0]
         else
             return this._find(fValues.slice(1), findCallback)
+    },
+    forEach: function (forEachCallback) {
+        this._forEach(this.values, forEachCallback)
+    },
+    _forEach: function (fValues, forEachCallback) {
+        if (fValues.length == 0)
+            return
+        else {
+            forEachCallback(fValues[0])
+            this._forEach(fValues.slice(1), forEachCallback)
+        }
     }
 }
 
@@ -100,9 +111,20 @@ const vPeopleAge = vPeople.reduce(0, (sum, person) => sum + person.age )
 
 const vDoctor = vPeople.find((person) => person.name === "Doctor" )
 
+const vPeopleObj = vPeople.reduce([], (people, p) => {
+        people.push(
+            Object.create(person).init(p.name, p.age, p.quote)
+        )
+        return people
+    }
+)
+
 console.log("Sum with reduce:", vSum)
 console.log("Difference with reduce:", vDiff)
 console.log("Array of doubled values with map:", vDoubleArray)
 console.log("Array of even numbers with map:", vEvenNumbers)
 console.log("Sum of ages in people aray:", vPeopleAge)
 console.log("Doctor object with find:", vDoctor)
+console.log("People stating their quotes --->")
+Object.create(vixArray).init(vPeopleObj).forEach((person) => person.speak())
+console.log("<---")
