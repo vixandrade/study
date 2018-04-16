@@ -10,7 +10,7 @@ const mockTasks = [
     [ "Doctor", "End the Time War", "done" ],
     [ "Vix", "Fix Redis issue", "done" ],
     [ "Vix", "Cook lunch", "pending" ],
-    [ "Doctor", "Get rid of Daleks" ]
+    [ "Doctor", "Get rid of Daleks", "pending" ]
 ]
 
 const vixArray = {
@@ -98,6 +98,7 @@ const task = {
 
 const vInts = Object.create(vixArray).init(mockInts)
 const vPeople = Object.create(vixArray).init(mockPeople)
+const vTasks = Object.create(vixArray).init(mockTasks)
 
 const vSum = vInts.reduce(0, (sum, value) => sum + value )
 
@@ -111,13 +112,34 @@ const vPeopleAge = vPeople.reduce(0, (sum, person) => sum + person.age )
 
 const vDoctor = vPeople.find((person) => person.name === "Doctor" )
 
-const vPeopleObj = vPeople.reduce([], (people, p) => {
-        people.push(
-            Object.create(person).init(p.name, p.age, p.quote)
-        )
-        return people
-    }
-)
+const vPeopleObjArr = vPeople.reduce([], (people, p) => {
+    people.push(
+        Object.create(person).init(p.name, p.age, p.quote)
+    )
+    return people
+})
+
+const vTaskObjArr = vTasks.reduce([], (tasks, t) => {
+    tasks.push(
+        Object.create(task).init(
+            vPeopleObjArr.find((person) => person.name === t[0]),
+            t[1],
+            t[2])
+    )
+    return tasks
+})
+
+const vPendingTasks =
+    Object.create(vixArray)
+    .init(vTaskObjArr)
+    .filter((task) => task.status === 'pending')
+
+const vPendingAges =
+    Object.create(vixArray)
+    .init(vPendingTasks)
+    .reduce(0, (sum, task) => {
+        return sum + task.owner.age
+    })
 
 console.log("Sum with reduce:", vSum)
 console.log("Difference with reduce:", vDiff)
@@ -126,5 +148,6 @@ console.log("Array of even numbers with map:", vEvenNumbers)
 console.log("Sum of ages in people aray:", vPeopleAge)
 console.log("Doctor object with find:", vDoctor)
 console.log("People stating their quotes --->")
-Object.create(vixArray).init(vPeopleObj).forEach((person) => person.speak())
+Object.create(vixArray).init(vPeopleObjArr).forEach((person) => person.speak())
 console.log("<---")
+console.log("Sum of ages of pending tasks' owners:", vPendingAges)
