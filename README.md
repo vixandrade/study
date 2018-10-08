@@ -1,2 +1,2 @@
 # study
-Code wrote during study sessions
+Code written during study sessions
